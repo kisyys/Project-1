@@ -551,15 +551,7 @@ function dayview(number, number2) {
                     }
                 }
         
-                if(hour==18 && number%2==0 && special==0) {
-                    etasks.insertAdjacentHTML("beforeend", `<div class="hourspecial"${` id="divhourtask` + hour + `";>` + `<p style="color:black";>` + previous + ":00" + "-" + hour + ":00" + "  " + "</p>" + `<a style="color:blue" href="https://kisyys.github.io/kasvis/">Plan a dinner</a>`}</div>`);
-                    list_divhourtasks.push("divhourtask" + hour);
-                    history2.push(` <div class="hourspecial"${` id="divhourtask` + hour + `";>` + `<p style="color:black";>` + previous + ":00" + "-" + hour + ":00" + "  " + "</p>" + `<a style="color:blue" href="https://kisyys.github.io/kasvis/">Plan a dinner</a>`}</div>`);
-                    list_divhourtasks_history.push("divhourtask" + hour);
-                    addStats(1,"weekly_pos");
-                    addStats(1,"daily_pos");      
-                }
-                else if(10<hour && 21>=hour && random3==0 && special==0) {
+                if(10<hour && 21>=hour && random3==0 && special==0) {
                     etasks.insertAdjacentHTML("beforeend", `<div class="hourhard"${` id="divhourtask` + hour + `";>` + `<p style="color:black";>` + previous + ":00" + "-" + hour + ":00" + "  " + "</p>" + random4}</div>`);
                     list_divhourtasks.push("divhourtask" + hour);
                     history2.push(` <div class="hourhard"${` id="divhourtask` + hour + `";>` + `<p style="color:black";>` + previous + ":00" + "-" + hour + ":00" + "  " + "</p>" + random4}</div>`);
