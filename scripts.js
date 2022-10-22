@@ -125,13 +125,13 @@ function info(){
     <b>Purpose: </b> To gamify different kinds of tasks which you would like to achieve during a day. Tasks can be related to anything from sports to cleaning. 
     </p>
     <p>
-    <b>How: </b> App will generate tasks randomly for you in the today's view between hours of 10-21 based of different task lists. You then need to do them if possible and if you have succeeded, you can swipe right to complete a task which will be recorded as a point. Swiping only works on touch screen. No alternative yet available.
+    <b>How: </b> App will generate tasks randomly for you in the today's view between hours of 10-21 based of different task lists. You then need to do them if possible and if you have succeeded, you can swipe right to complete a task which will be recorded as a point. When swiping left, the task is undone. Swiping only works on touch screen. If you do not have touch screen, you can click the task to complete it and if you click the task again, it will be undone. 
     <br>
     <br> 
     In the task menu you can see a list of random tasks depending on difficulty. You can add more of those tasks if needed and you may delete the ones that you do not need. You can also add a special task for a certain date and time if needed.   
     <br>
     <br>
-    In the stats menu you can track your progress. This is still very basic stats menu so more features will come. 
+    In the stats menu you can track your progress. 
     </p>
     <b>Disclaimer: </b> Added tasks, stats and history are saved on your browser's local storage, so if you clear the history in your browser, all the created data in local storage will be cleared also.
     </p>
@@ -167,11 +167,11 @@ function tasks(){
     <br> 
 	<legend>Add a special task</legend>
 	<label for="date2">Date(d/m/yyyy):</label>
-	<input type="text" id="date2"></input>
+	<input type="text" id="date2"></input><span id="feedback1"></span>
 	<br>
 	<br>
-    <label for="time2">Starting time:</label>
-	<input type="text" id="time2"></input>
+    <label for="time2">Starting time (E.g. 14):</label>
+	<input type="text" id="time2"></input><span id="feedback2"></span>
 	<br>
 	<br>
     <label for="stask2">Special task name:</label>
@@ -250,13 +250,43 @@ function addTask(number) {
         var date = document.getElementById("date2").value;
         var time = document.getElementById("time2").value;
         var task = document.getElementById("stasks2").value;
-        special_tasks.push(date,time,task);
-        localStorage.setItem("specialtasks", JSON.stringify(special_tasks));
-        document.getElementById("tasks01").innerHTML = "Task added";
-        setTimeout(dis,2000);
-        document.getElementById("date2").value ="";
-        document.getElementById("time2").value ="";
-        document.getElementById("stasks2").value ="";
+        var date_ok = false;
+        var time_ok = false;
+
+        var c_date = date.split("/");
+
+        if(parseInt(c_date[0])>0 && parseInt(c_date[0])<32 && parseInt(c_date[1])>0 && parseInt(c_date[1])<12 && parseInt(c_date[2])>2021 && parseInt(c_date[2])<3000) {
+            date_ok = true;
+            document.getElementById("date2").style.borderColor = "";
+            document.getElementById("feedback1").innerHTML = "";
+        } else {
+            document.getElementById("date2").style.borderColor = "red";
+            document.getElementById("feedback1").innerHTML = "<b> Please fill in correctly </b>";  
+        }
+
+        if(parseInt(time)>-1 && parseInt(time)<25) {
+            time_ok = true;
+            document.getElementById("time2").style.borderColor = "";
+            document.getElementById("feedback2").innerHTML = ""; 
+        } else {
+            document.getElementById("time2").style.borderColor = "red";
+            document.getElementById("feedback2").innerHTML = "<b> Please fill in correctly </b>";  
+        }
+
+        if(date_ok==true && time_ok==true) {
+            special_tasks.push(date,time,task);
+            localStorage.setItem("specialtasks", JSON.stringify(special_tasks));
+            document.getElementById("tasks01").innerHTML = "Task added";
+            setTimeout(dis,2000);
+            document.getElementById("date2").value ="";
+            document.getElementById("time2").value ="";
+            document.getElementById("stasks2").value ="";
+            document.getElementById("date2").style.borderColor = "";
+            document.getElementById("feedback1").innerHTML = "";
+            document.getElementById("time2").style.borderColor = "";
+            document.getElementById("feedback2").innerHTML = "";  
+        }
+        
         
     }
     
@@ -372,8 +402,12 @@ function stats() {
 
     const status = document.querySelector("#tasks01");
 
-    if(today_score/today_possible<0.5 || today_score==0) {
+    if(today_score==0) {
         status.insertAdjacentHTML("beforeend",  "<b> Daily progress: You have not done any tasks :(</b> <br>");
+    }
+
+    else if(today_score/today_possible<0.5) {
+        status.insertAdjacentHTML("beforeend",  "<b> Daily progress: You have done less than half of tasks - Please try to do more!</b> <br>");
     }
     else if(today_score/today_possible==1) {
         status.insertAdjacentHTML("beforeend",  "<b> Daily progress: All tasks done, you can now relax for today! :)</b> <br> " +  `<img src="makeit2.gif" alt="">` );
@@ -541,9 +575,9 @@ function dayview(number, number2) {
                 
                 for(let y = 0; y<special_tasks.length;y++) {
                     if(special_tasks[y]==whatDay && special_tasks[y+1]==previous) {
-                        etasks.insertAdjacentHTML("beforeend", `<div class="hourspecial"${` id="divhourtask` + hour + `";>` + `<p style="color:black";>` + previous + ":00" + "-" + hour + ":00" + "  " + "</p>" + special_tasks[y+2]}</div>`);
+                        etasks.insertAdjacentHTML("beforeend", `<div class="hourspecial"${` onClick="done(` + list_divhourtasks.length + `)" id="divhourtask` + hour + `";>` + `<p style="color:black";>` + previous + ":00" + "-" + hour + ":00" + "  " + "</p>" + special_tasks[y+2]}</div>`);
                         list_divhourtasks.push("divhourtask" + hour);
-                        history2.push(` <div class="hourspecial"${` id="divhourtask` + hour + `";>` + `<p style="color:black";>` + previous + ":00" + "-" + hour + ":00" + "  " + "</p>" + special_tasks[y+2]}</div>`);
+                        history2.push(` <div class="hourspecial"${` id="divhourtask` + hour + `" onClick="done(` + list_divhourtasks.length + `)";>` + `<p style="color:black";>` + previous + ":00" + "-" + hour + ":00" + "  " + "</p>" + special_tasks[y+2]}</div>`);
                         list_divhourtasks_history.push("divhourtask" + hour);
                         special = 1;
                         addStats(1,"weekly_pos");
@@ -552,24 +586,24 @@ function dayview(number, number2) {
                 }
         
                 if(10<hour && 21>=hour && random3==0 && special==0) {
-                    etasks.insertAdjacentHTML("beforeend", `<div class="hourhard"${` id="divhourtask` + hour + `";>` + `<p style="color:black";>` + previous + ":00" + "-" + hour + ":00" + "  " + "</p>" + random4}</div>`);
+                    etasks.insertAdjacentHTML("beforeend", `<div class="hourhard"${` onClick="done(` + list_divhourtasks.length + `)" id="divhourtask` + hour + `";>` + `<p style="color:black";>` + previous + ":00" + "-" + hour + ":00" + "  " + "</p>" + random4}</div>`);
                     list_divhourtasks.push("divhourtask" + hour);
-                    history2.push(` <div class="hourhard"${` id="divhourtask` + hour + `";>` + `<p style="color:black";>` + previous + ":00" + "-" + hour + ":00" + "  " + "</p>" + random4}</div>`);
+                    history2.push(` <div class="hourhard"${` id="divhourtask` + hour + `" onClick="done(` + list_divhourtasks.length + `)";>` + `<p style="color:black";>` + previous + ":00" + "-" + hour + ":00" + "  " + "</p>" + random4}</div>`);
                     list_divhourtasks_history.push("divhourtask" + hour);
                     addStats(1,"weekly_pos");
                     addStats(1,"daily_pos");
                 }
                 else if(10<hour && 21>=hour && random1==0 && special==0) {
-                    etasks.insertAdjacentHTML("beforeend", `<div class="houreasy"${` id="divhourtask` + hour + `";>` + `<p style="color:black";>` + previous + ":00" + "-" + hour + ":00" + "  " + "</p>" + random2}</div>`);
+                    etasks.insertAdjacentHTML("beforeend", `<div class="houreasy"${` onClick="done(` + list_divhourtasks.length + `)" id="divhourtask` + hour + `";>` + `<p style="color:black";>` + previous + ":00" + "-" + hour + ":00" + "  " + "</p>" + random2}</div>`);
                     list_divhourtasks.push("divhourtask" + hour);
-                    history2.push(` <div class="houreasy"${` id="divhourtask` + hour + `";>` + `<p style="color:black";>` + previous + ":00" + "-" + hour + ":00" + "  " + "</p>" + random2}</div>`);
+                    history2.push(` <div class="houreasy"${` id="divhourtask` + hour + `" onClick="done(` + list_divhourtasks.length + `)";>` + `<p style="color:black";>` + previous + ":00" + "-" + hour + ":00" + "  " + "</p>" + random2}</div>`);
                     list_divhourtasks_history.push("divhourtask" + hour);
                     addStats(1,"weekly_pos");
                     addStats(1,"daily_pos"); 
                 }
                 else if (special==0) {
-                    etasks.insertAdjacentHTML("beforeend", `<div class="hour"${` id="divhour` + hour + `";>` + `<p style="color:black";>` + previous + ":00" + "-" + hour + ":00" + "  " + "</p>"}</div>`);
-                    history2.push(` <div class="hour"${` id="divhour` + hour + `";>` + `<p style="color:black";>` + previous + ":00" + "-" + hour + ":00" + "  " + "</p>"}</div>`);
+                    etasks.insertAdjacentHTML("beforeend", `<div class="hour"${` onClick="done(` + list_divhourtasks.length + `)" id="divhour` + hour + `";>` + `<p style="color:black";>` + previous + ":00" + "-" + hour + ":00" + "  " + "</p>"}</div>`);
+                    history2.push(` <div class="hour"${` id="divhour` + hour + `" onClick="done(` + list_divhourtasks.length + `)";>` + `<p style="color:black";>` + previous + ":00" + "-" + hour + ":00" + "  " + "</p>"}</div>`);
                 }
 
                 if(hour==24) {
@@ -581,7 +615,7 @@ function dayview(number, number2) {
             else {
                 for(let y = 0; y<special_tasks.length;y++) {
                     if(special_tasks[y]==whatDay && special_tasks[y+1]==previous) {
-                        etasks.insertAdjacentHTML("beforeend", `<div class="hourspecial"${` id="divhourtask` + hour + `";>` + `<p style="color:black";>` + previous + ":00" + "-" + hour + ":00" + "  " + "</p>" + special_tasks[y+2]}</div>`);
+                        etasks.insertAdjacentHTML("beforeend", `<div class="hourspecial"${` id="divhourtask`  + hour + `";>` + `<p style="color:black";>` + previous + ":00" + "-" + hour + ":00" + "  " + "</p>" + special_tasks[y+2]}</div>`);
                         list_divhourtasks.push("divhourtask" + hour);
                         special = 1;
                     }
@@ -1392,21 +1426,25 @@ function dayview(number, number2) {
 
 // Function for doing a task
 function done(numberx) {
-    score_total++;
-    localStorage.setItem("total", score_total);
-    addStats(1,"weekly");
-    addStats(1,"daily");  
-    var div = document.getElementById(list_divhourtasks[numberx]);
-    var t = div.textContent;
-    var t2 = t.split("  ");
-    div.innerHTML = `<p style="color:black";>` + t2[0] + "  " + "</p>" +  "<del>" + t2[1] + "</del>";
-    var t3 = t.split(":");
-
-    history2[parseInt(old2)+parseInt(t3[0])] = div.outerHTML;
-    localStorage.setItem("day_history", JSON.stringify(history2)); 
-    document.getElementById("tasks2").innerHTML = "";
-    const score2 = document.querySelector("#tasks2");
-    score2.insertAdjacentHTML("beforeend", "<b> Score: " + score_total + "</b>");      
+    var content = document.getElementById(list_divhourtasks[numberx]).innerHTML;
+    if(!content.includes("<del>")) {
+        score_total++;
+        localStorage.setItem("total", score_total);
+        addStats(1,"weekly");
+        addStats(1,"daily");  
+        var div = document.getElementById(list_divhourtasks[numberx]);
+        var t = div.textContent;
+        var t2 = t.split("  ");
+        div.innerHTML = `<p style="color:black";>` + t2[0] + "  " + "</p>" +  "<del>" + t2[1] + "</del>";
+        var t3 = t.split(":");
+        history2[parseInt(old2)+parseInt(t3[0])] = div.outerHTML;
+        localStorage.setItem("day_history", JSON.stringify(history2)); 
+        document.getElementById("tasks2").innerHTML = "";
+        const score2 = document.querySelector("#tasks2");
+        score2.insertAdjacentHTML("beforeend", "<b> Score: " + score_total + "</b>");
+    } else {
+        undone(numberx);
+    }     
 }
 
 // Function for undoing a task
