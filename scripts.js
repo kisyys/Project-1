@@ -128,7 +128,7 @@ function info(){
     <b>How: </b> App will generate tasks randomly for you in the today's view between hours of 10-21 based of different task lists. You then need to do them if possible and if you have succeeded, you can swipe right to complete a task which will be recorded as a point. When swiping left, the task is undone. Swiping only works on touch screen. If you do not have touch screen, you can click the task to complete it and if you click the task again, it will be undone. 
     <br>
     <br> 
-    In the task menu you can see a list of random tasks depending on difficulty. You can add more of those tasks if needed and you may delete the ones that you do not need. You can also add a special task for a certain date and time if needed.   
+    In the task menu you can see a list of some random tasks depending on difficulty. You can add more of those tasks if needed and you may delete the ones that you do not need. You can also add a special task for a certain date and time if needed.   
     <br>
     <br>
     In the stats menu you can track your progress. 
