@@ -1,4 +1,4 @@
-# Tasklendar
+# Project 1: Tasklendar
 Can be found and used at https://lucky-otter-2cfd75.netlify.app/.
 
 ## Purpose of the project
