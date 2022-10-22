@@ -407,7 +407,7 @@ function stats() {
     }
 
     else if(today_score/today_possible<0.5) {
-        status.insertAdjacentHTML("beforeend",  "<b> Daily progress: You have done less than half of tasks - Please try to do more!</b> <br>");
+        status.insertAdjacentHTML("beforeend",  "<b> Daily progress: You have done less than half of the tasks - Please try to do more!</b> <br>");
     }
     else if(today_score/today_possible==1) {
         status.insertAdjacentHTML("beforeend",  "<b> Daily progress: All tasks done, you can now relax for today! :)</b> <br> " +  `<img src="makeit2.gif" alt="">` );
